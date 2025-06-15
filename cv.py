@@ -182,7 +182,7 @@ if bg_file and person_file:
         harmonized = color_transfer_rgba(person_resized, patch)
 
         adjusted_x = x - person_resized.width // 2
-        adjusted_y = y - int(person_resized.height * 1)  # place 95% height above click (feet near bottom)
+        adjusted_y = y - person_resized.height
 
         shadow_layer = Image.new("RGBA", bg_img_orig.size, (0, 0, 0, 0))
         shadow_only = add_foot_shadow(shadow_layer, harmonized, (adjusted_x, adjusted_y))
