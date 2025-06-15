@@ -27,16 +27,16 @@ from ultralytics.nn.tasks import SegmentationModel
 add_safe_globals([SegmentationModel])
 
 from ultralytics import YOLO
-import torch
-from packaging import version
+# import torch
+# from packaging import version
 
-torch_version = torch.__version__
+# torch_version = torch.__version__
 
-if version.parse(torch_version) >= version.parse("2.6.0"):
-    ckpt = torch.load(MODEL_PATH, map_location='cpu', weights_only=False)
-else:
-    ckpt = torch.load(MODEL_PATH, map_location='cpu')
-model = YOLO(ckpt)
+# if version.parse(torch_version) >= version.parse("2.6.0"):
+#     ckpt = torch.load(MODEL_PATH, map_location='cpu', weights_only=False)
+# else:
+#     ckpt = torch.load(MODEL_PATH, map_location='cpu')
+model = YOLO(MODEL_PATH)
 
 blend_factor = 0.3
 
