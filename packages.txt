@@ -1,3 +1,5 @@
+freeglut3-dev
+libgtk2.0-dev
 libegl1
 libgl1-mesa-glx
 libglib2.0-0
