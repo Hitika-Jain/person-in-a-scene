@@ -5,11 +5,31 @@ import numpy as np
 import io
 import cv2
 from rembg import remove
-from ultralytics import YOLO
 from streamlit_image_coordinates import streamlit_image_coordinates
+import os
+import requests
+
+MODEL_PATH = "models/yolov8n-seg.pt"
+MODEL_URL = "https://github.com/ultralytics/assets/releases/download/v0.0.0/yolov8n-seg.pt"
+
+def download_model():
+    if not os.path.exists(MODEL_PATH):
+        os.makedirs("models", exist_ok=True)
+        with requests.get(MODEL_URL, stream=True) as r:
+            with open(MODEL_PATH, 'wb') as f:
+                for chunk in r.iter_content(chunk_size=8192):
+                    f.write(chunk)
+
+download_model()
+
+from torch.serialization import add_safe_globals
+from ultralytics.nn.tasks import SegmentationModel
+add_safe_globals([SegmentationModel])
+
+from ultralytics import YOLO
+model = YOLO(MODEL_PATH)
 
 blend_factor = 0.3
-model = YOLO("models/yolov8n-seg.pt")
 
 st.set_page_config(page_title="YOLO Person Placement", layout="centered")
 st.title("🧍‍♂️ Person Placement with YOLO + Harmonization")
