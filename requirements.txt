@@ -1,7 +1,7 @@
 streamlit
-pillow
-numpy
-opencv-python
 rembg
+opencv-python-headless
+Pillow
+numpy
 ultralytics
 streamlit-image-coordinates
