@@ -1,6 +1,6 @@
 streamlit
-rembg
 opencv-python-headless
+rembg
 Pillow
 numpy
 ultralytics
