@@ -5,9 +5,11 @@ channels:
 dependencies:
   - python=3.10.13  # Exact Python version you want
   - opencv=4.9.0
+  - cudatoolkit==11.3.1
   - pip  # Required to install pip packages
   - pip:  # List all your pip packages here
     - streamlit==1.45.1
     - opencv-python-headless==4.9.0.80
     - rembg==2.0.66
     - onnxruntime==1.20.0
+    - numpy==1.22.3
