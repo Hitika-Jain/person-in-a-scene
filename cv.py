@@ -31,7 +31,7 @@ model = YOLO(MODEL_PATH)
 
 blend_factor = 0.3
 
-st.set_page_config(page_title="YOLO Person Placement", layout="centered")
+st.set_page_config(page_title="Place a Person in a scene smoothly", layout="centered")
 st.title("🧍‍♂️ Person Placement in a scene")
 
 bg_file = st.file_uploader("📤 Upload Background Image", type=["png", "jpg", "jpeg"])
