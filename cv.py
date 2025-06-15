@@ -9,7 +9,7 @@ from ultralytics import YOLO
 from streamlit_image_coordinates import streamlit_image_coordinates
 
 blend_factor = 0.3
-model = YOLO("yolov8n-seg.pt")
+model = YOLO("models/yolov8n-seg.pt")
 
 st.set_page_config(page_title="YOLO Person Placement", layout="centered")
 st.title("🧍‍♂️ Person Placement with YOLO + Harmonization")
