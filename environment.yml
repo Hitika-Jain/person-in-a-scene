@@ -3,14 +3,14 @@ channels:
   - conda-forge  # Recommended for better package availability
   - defaults
 dependencies:
-  - python=3.9.18  # Exact Python version you want
+  - python=3.10  # Exact Python version you want
   - opencv=4.9.0
   # cudatoolkit==11.3.1
   - pip  # Required to install pip packages
   - pip:  # List all your pip packages here
     - streamlit==1.45.1
     - opencv-python-headless==4.9.0.80
-    - rembg==2.0.66
+    - rembg==2.0.61
     - onnxruntime==1.20.0
     - pillow==10.1.0
     - numpy==1.26.4
