@@ -1,0 +1,10 @@
+person-in-a-scene
+
+Requirements:
+streamlit
+pillow
+numpy
+opencv-python
+rembg
+ultralytics
+streamlit-image-coordinates
