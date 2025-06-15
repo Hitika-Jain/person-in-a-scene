@@ -27,21 +27,12 @@ from ultralytics.nn.tasks import SegmentationModel
 add_safe_globals([SegmentationModel])
 
 from ultralytics import YOLO
-# import torch
-# from packaging import version
-
-# torch_version = torch.__version__
-
-# if version.parse(torch_version) >= version.parse("2.6.0"):
-#     ckpt = torch.load(MODEL_PATH, map_location='cpu', weights_only=False)
-# else:
-#     ckpt = torch.load(MODEL_PATH, map_location='cpu')
 model = YOLO(MODEL_PATH)
 
 blend_factor = 0.3
 
 st.set_page_config(page_title="YOLO Person Placement", layout="centered")
-st.title("🧍‍♂️ Person Placement with YOLO + Harmonization")
+st.title("🧍‍♂️ Person Placement in a scene")
 
 bg_file = st.file_uploader("📤 Upload Background Image", type=["png", "jpg", "jpeg"])
 person_file = st.file_uploader("🧍 Upload Person Image", type=["png", "jpg", "jpeg"])
@@ -73,6 +64,19 @@ def remove_background(img):
     result = remove(buffer.getvalue())
     return Image.open(io.BytesIO(result)).convert("RGBA")
 
+def trim_transparent_border(img):
+    """Crop out fully transparent edges after background removal."""
+    np_img = np.array(img)
+    if np_img.shape[2] == 4:  # Has alpha channel
+        alpha = np_img[:, :, 3]
+        y_nonzero, x_nonzero = np.where(alpha > 10)
+        if len(y_nonzero) == 0 or len(x_nonzero) == 0:
+            return img  # completely transparent
+        x1, y1, x2, y2 = min(x_nonzero), min(y_nonzero), max(x_nonzero), max(y_nonzero)
+        return img.crop((x1, y1, x2, y2))
+    else:
+        return img
+
 def color_transfer_rgba(source_img, target_img):
     source_rgba = source_img.convert("RGBA")
     target_rgb = target_img.convert("RGB")
@@ -97,21 +101,49 @@ def generate_shadow_mask(shadow_layer):
     mask = (alpha_channel > 10).astype(np.uint8) * 255
     return Image.fromarray(mask, mode="L")
 
-def add_foot_shadow(background, person, position, shadow_opacity=100, shadow_color=(0, 0, 0), blur_radius=8):
-    shadow_layer = Image.new("RGBA", background.size, (0, 0, 0, 0))
+def add_foot_shadow_only(image_size, position, person_size, shadow_opacity=100, shadow_color=(0, 0, 0), blur_radius=8):
+    shadow_layer = Image.new("RGBA", image_size, (0, 0, 0, 0))
     draw = ImageDraw.Draw(shadow_layer)
-    foot_center_x = position[0] + person.width // 2
-    foot_base_y = position[1] #+ person.height - 5
-    shadow_width = int(person.width * 0.6)
-    shadow_height = int(person.height * 0.12)
+
+    foot_center_x = position[0] + person_size[0] // 2
+    foot_base_y = position[1] + person_size[1] - 5
+    shadow_width = int(person_size[0] * 0.6)
+    shadow_height = int(person_size[1] * 0.12)
+
     bbox = [foot_center_x - shadow_width // 2, foot_base_y,
             foot_center_x + shadow_width // 2, foot_base_y + shadow_height]
+
     draw.ellipse(bbox, fill=shadow_color + (shadow_opacity,))
     blurred_shadow = shadow_layer.filter(ImageFilter.GaussianBlur(blur_radius))
-    final = background.copy()
-    final.paste(blurred_shadow, (0, 0), blurred_shadow)
-    final.paste(person, position, person)
-    return final
+    return blurred_shadow
+
+def classify_shadow_type(shadow_mask_img, blur_threshold=0.05):
+    """
+    Classifies shadow as hard or soft based on edge sharpness.
+    Args:
+        shadow_mask_img (PIL.Image): Binary shadow mask in 'L' mode (0 or 255)
+        blur_threshold (float): Threshold to distinguish hard/soft based on edge density
+    
+    Returns:
+        str: 'Hard Shadow' or 'Soft Shadow'
+    """
+    mask_np = np.array(shadow_mask)
+
+    # Use Canny edge detection to find sharp transitions
+    edges = cv2.Canny(mask_np, threshold1=30, threshold2=100)
+
+    # Measure edge density (amount of sharp edges)
+    edge_density = np.sum(edges > 0) / (mask_np.shape[0] * mask_np.shape[1])
+
+    # Calculate edge sharpness using Laplacian variance
+    laplacian = cv2.Laplacian(mask_np, cv2.CV_64F)
+    sharpness = laplacian.var()
+
+    # Threshold-based classification
+    if sharpness > 200 and edge_density > 0.01:
+        return "Hard Shadow"
+    else:
+        return "Soft Shadow"
 
 def paste_person_on_bg(bg, person_rgba, pos):
     bg = bg.convert("RGBA")
@@ -143,6 +175,8 @@ if bg_file and person_file:
 
     with st.spinner(" Removing Background..."):
         transparent_person = remove_background(cropped)
+        transparent_person = trim_transparent_border(transparent_person)
+
 
     st.markdown("### Click where you want to place the foot of the person")
     display_width = 800
@@ -185,9 +219,18 @@ if bg_file and person_file:
         adjusted_y = y - person_resized.height
 
         shadow_layer = Image.new("RGBA", bg_img_orig.size, (0, 0, 0, 0))
-        shadow_only = add_foot_shadow(shadow_layer, harmonized, (adjusted_x, adjusted_y))
+        shadow_only = add_foot_shadow_only(bg_img_orig.size, (adjusted_x, adjusted_y), person_resized.size)
+        # shadow_only = add_foot_shadow(shadow_layer, harmonized, (adjusted_x, adjusted_y))
         shadow_mask = generate_shadow_mask(shadow_only)
-        final = add_foot_shadow(bg_img_orig.convert("RGBA"), harmonized, (adjusted_x, adjusted_y))
+        unique_vals = np.unique(np.array(shadow_mask))
+        st.write("Unique values in shadow mask:", unique_vals)
+        st.image(shadow_mask, caption="Binary Shadow Mask")
+        shadow_type = classify_shadow_type(shadow_mask)
+        st.image(shadow_mask, caption=f"Shadow Mask - {shadow_type}")
+        # final = add_foot_shadow(bg_img_orig.convert("RGBA"), harmonized, (adjusted_x, adjusted_y))
+        bg_with_shadow = bg_img_orig.convert("RGBA").copy()
+        bg_with_shadow.paste(shadow_only, (0, 0), shadow_only)
+        final = paste_person_on_bg(bg_with_shadow, harmonized, (adjusted_x, adjusted_y))
 
         st.image(harmonized, caption=" Harmonized Person")
         st.image(final, caption=" Final Composite Image")
