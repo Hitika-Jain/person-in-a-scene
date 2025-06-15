@@ -4,6 +4,7 @@ channels:
   - defaults
 dependencies:
   - python=3.10.13  # Exact Python version you want
+  - opencv=4.9.0
   - pip  # Required to install pip packages
   - pip:  # List all your pip packages here
     - streamlit==1.45.1
