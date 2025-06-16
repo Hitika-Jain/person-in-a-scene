@@ -9,16 +9,16 @@ This project allows you to **insert a person into a background image** in a visu
 
 ---
 
-## 🌟 Demo
+##  Demo
 ([App Demo](https://person-in-a-scene-hneohw7evjfqszvkkyvm8w.streamlit.app/))
 
-### 🎯 Input
+###  Input
 
 | Person Image | Background Image |
 |--------------|------------------|
 | ![Person](./assets/person.jpg) | ![Background](./assets/background.jpg) |
 
-### 🔄 Output
+###  Output
 
 | Final Composite |
 |-----------------|
@@ -26,7 +26,7 @@ This project allows you to **insert a person into a background image** in a visu
 
 ---
 
-## 🎥 How it works (Pipeline)
+##  How it works (Pipeline)
 
 1. **Person Detection**
    - YOLOv8 detects the person in the image
@@ -53,19 +53,19 @@ This project allows you to **insert a person into a background image** in a visu
 
 ---
 
-## 🚀 Features
+##  Features
 
-- 📦 One-click composite generation
-- 🧍 YOLO-based person detection
-- 🪞 Background removal and tight cropping
-- 📏 Height scaling based on other people in the scene
-- 🎨 Shadow & color blending for realism
-- 🖱️ Interactive UI with drag-and-drop placement
-- 📥 Save final image
+-  One-click composite generation
+-  YOLO-based person detection
+-  Background removal and tight cropping
+-  Height scaling based on other people in the scene
+-  Shadow & color blending for realism
+-  Interactive UI with drag-and-drop placement
+-  Save final image
 
 ---
 
-## 🧪 Tech Stack
+##  Tech Stack
 
 | Tool          | Purpose                      |
 |---------------|------------------------------|
@@ -77,7 +77,7 @@ This project allows you to **insert a person into a background image** in a visu
 
 ---
 
-## 🧰 Folder Structure
+##  Folder Structure
 
 ```
 person-in-a-scene/
@@ -91,9 +91,9 @@ person-in-a-scene/
 
 ---
 
-## 💻 Setup Instructions
+##  Setup Instructions
 
-### 🔧 Installation
+###  Installation
 
 ```bash
 git clone https://github.com/Hitika-Jain/person-in-a-scene.git
@@ -101,7 +101,7 @@ cd person-in-a-scene
 pip install -r requirements.txt
 ```
 
-### ▶️ Run Locally
+###  Run Locally
 
 ```bash
 streamlit run app.py
@@ -111,9 +111,9 @@ Then open the browser at `http://localhost:8501`
 
 ---
 
-## 📸 Example Input & Output
+##  Example Input & Output
 
-### 📥 Person Image
+###  Person Image
 
 _A person to be inserted into a scene._
 
@@ -123,7 +123,7 @@ _A person to be inserted into a scene._
 
 ---
 
-### 🌄 Background Image
+###  Background Image
 
 _Any arbitrary scene image._
 
@@ -131,7 +131,7 @@ _Any arbitrary scene image._
 
 ---
 
-### 🎨 Output (Final Composite)
+###  Output (Final Composite)
 
 _A photorealistic image with seamless placement._
 
@@ -139,7 +139,7 @@ _A photorealistic image with seamless placement._
 
 ---
 
-## 🔍 Use Cases
+##  Use Cases
 
 - AR/VR and avatar placement
 - Image compositing and mockups
@@ -148,12 +148,12 @@ _A photorealistic image with seamless placement._
 
 ---
 
-## 🙋 Author
+##  Author
 
 Built by [Hitika Jain](https://github.com/Hitika-Jain) with 💙
 
 ---
 
-## 📄 License
+##  License
 
 This project is open-sourced under the **MIT License**.
