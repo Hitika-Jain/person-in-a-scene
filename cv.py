@@ -202,7 +202,7 @@ if bg_file and person_file:
             int(transparent_person.width * scale),
             int(transparent_person.height * scale)
         ))
-
+        st.image(person_resized, caption=" resized Person")
         st.success(f" Placing person at: ({x}, {y}) in original resolution")
 
         patch_size = 30
