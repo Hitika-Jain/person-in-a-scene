@@ -22,7 +22,7 @@ This project allows you to **insert a person into a background image** in a visu
 
 | Final Composite |
 |-----------------|
-| ![Output](./assets/composite.jpg) |
+| ![Output](./assets/composite.png) |
 
 ---
 
@@ -135,7 +135,7 @@ _Any arbitrary scene image._
 
 _A photorealistic image with seamless placement._
 
-![Final Output](./assets/composite.jpg)
+![Final Output](./assets/composite.png)
 
 ---
 
